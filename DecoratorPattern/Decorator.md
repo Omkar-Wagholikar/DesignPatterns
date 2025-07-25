@@ -51,6 +51,8 @@ Containing the beverage object, providing it's own set of methods for the same.
 
 When the cost method is called, the wrappers will add their own cost to the cost of the object they contain. This results in the outermost object returning the cost of the total beverage, regardless of the actual arrangement or composition of the wrappers.
 
+![image](../media/decorator_coffee.png)
+
 ### Issues with the pattern:
 Let's say that we have a discount running for the coffee. Here there is no easy way to modify the code to account for this, as any changes to the coffee will not ripple out to the cost of the total beverage.
 #### Limitations:
