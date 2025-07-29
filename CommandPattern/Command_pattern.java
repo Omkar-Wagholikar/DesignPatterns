@@ -1,37 +1,37 @@
 // Command Interface
 interface ICommand {
-    void execute();
+    void execute(String path);
 }
 
 // Receiver Interface
 interface IFileSystem {
-    void openFile();
-    void closeFile();
+    void openFile(String path);
+    void closeFile(String path);
 }
 
 // Receivers
 class UnixFileSystem implements IFileSystem {
     
     @Override
-    public void openFile() {
-        System.out.println("method 'openFile' on the UnixFileSystem");
+    public void openFile(String path) {
+        System.out.println("method 'openFile' on the UnixFileSystem, opening: " + path);
     }
 
     @Override
-    public void closeFile() {
-        System.out.println("method 'closeFile' on the UnixFileSystem");
+    public void closeFile(String path) {
+        System.out.println("method 'closeFile' on the UnixFileSystem, closing: " + path);
     }
 }
 class WindowsFileSystem implements IFileSystem {
     
     @Override
-    public void openFile() {
-        System.out.println("method 'openFile' on the WindowsFileSystem");
+    public void openFile(String path) {
+        System.out.println("method 'openFile' on the WindowsFileSystem, opening: " + path);
     }
     
     @Override
-    public void closeFile() {
-        System.out.println("method 'closeFile' on the WindowsFileSystem");
+    public void closeFile(String path) {
+        System.out.println("method 'closeFile' on the WindowsFileSystem, closing: " + path);
     }
 }
 
@@ -44,8 +44,8 @@ class OpenFileCommand implements ICommand {
     }
 
     @Override
-    public void execute() {
-        fileSystem.openFile();
+    public void execute(String path) {
+        fileSystem.openFile(path);
     }
 }
 
@@ -58,44 +58,55 @@ class CloseFileCommand implements ICommand {
     }
 
     @Override
-    public void execute() {
-        fileSystem.closeFile();
+    public void execute(String path) {
+        fileSystem.closeFile(path);
     }
 }
 
 // Invoker class 
-class MyFile {
+class FileOperationInvoker {
     private final ICommand command;
-
-    public MyFile(ICommand command) {
+    private final String path;
+    public FileOperationInvoker(String path, ICommand command) {
         this.command = command;
+        this.path = path;
     }
 
-    public void execute() {
-        command.execute();
+    public void executeCommand() {
+        command.execute(path);
     }
 }
 
 // Utility Class
 class FileSystemUtil {
-    public static IFileSystem getUnderlyingFileSystem(String sys) {
-        // Just a simple toggle for demo purpose
-        if(sys.equals("unix")) return new UnixFileSystem();  // or return new WindowsFileSystem();
-        return new WindowsFileSystem();
+    public static IFileSystem getUnderlyingFileSystem() { 
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains("windows")) {
+            System.out.println("Detected Windows OS. Using WindowsFileSystem.");
+            return new WindowsFileSystem();
+        } else if (osName.contains("linux") || osName.contains("unix")) {
+            System.out.println("Detected Unix/Linux OS. Using UnixFileSystem.");
+            return new UnixFileSystem();
+        } else {
+            System.out.println("Unknown OS detected: " + osName + ". Defaulting to UnixFileSystem.");
+            return new UnixFileSystem(); // Default to Unix or throw an exception
+        }
     }
 }
 
 
 public class Command {
     public static void main(String[] args) {
-        IFileSystem fs = FileSystemUtil.getUnderlyingFileSystem("unix");
-        ICommand open = new OpenFileCommand(fs);
-        ICommand close = new CloseFileCommand(fs);
+        IFileSystem fs = FileSystemUtil.getUnderlyingFileSystem();
+        ICommand openConfig = new OpenFileCommand(fs);
+        ICommand closeConfig = new CloseFileCommand(fs);
+        
+        String path = "/path/to/file";
+        
+        FileOperationInvoker fileOpen = new FileOperationInvoker(path, openConfig);
+        FileOperationInvoker closeOpen = new FileOperationInvoker(path,closeConfig);
 
-        MyFile fileOpen = new MyFile(open);
-        MyFile closeOpen = new MyFile(close);
-
-        fileOpen.execute();
-        closeOpen.execute();
+        fileOpen.executeCommand();
+        closeOpen.executeCommand();
     }
 }
