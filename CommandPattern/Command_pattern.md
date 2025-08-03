@@ -86,6 +86,5 @@ From this decomposition we gain:
 * **Queue/Log Support**: Commands can be stored for later execution or for undo functionality.  
 * **Dynamic Binding**: The command and receiver are selected at runtime by the client.
 
-<!-- ![image](../media/Command-Class-Diagram.png) -->
 
 ### [Code](./Command.java)
