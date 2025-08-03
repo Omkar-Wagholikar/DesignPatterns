@@ -15,7 +15,7 @@ The system has 3 main components:
 2. The **Command** objects (`OpenFileCommand`, `CloseFileCommand`) that encapsulate the actions and interact with the appropriate receiver.  
 3. The **Invoker** (`FileInvoker`) that triggers the command without knowing what action is being performed or how.
 
-<!-- ![image](../media/command-pattern-def-diagram.png) -->
+![image](../media/command-pattern-def-diagram.png)
 
 #### Problem
 
@@ -52,7 +52,7 @@ From this decomposition we gain:
 2. We can add more commands (rename, move, copy) without changing any existing code.  
 3. Receivers can vary (Windows vs Unix) without impacting commands or the invoker.
 
-<!-- ![image](../media/Command-Class-Diagram.png) -->
+![image](../media/Command-Class-Diagram.png)
 
 #### Implementation Flow details:
 
@@ -86,5 +86,6 @@ From this decomposition we gain:
 * **Queue/Log Support**: Commands can be stored for later execution or for undo functionality.  
 * **Dynamic Binding**: The command and receiver are selected at runtime by the client.
 
+<!-- ![image](../media/Command-Class-Diagram.png) -->
 
-### [Code](./Command_pattern.java)
+### [Code](./Command.java)
